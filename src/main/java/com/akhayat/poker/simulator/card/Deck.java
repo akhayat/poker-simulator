@@ -19,6 +19,7 @@ public class Deck {
      */
     private final int DECK_SIZE = 52;
     private List<Card> cardList = new ArrayList<>(DECK_SIZE);
+    private int topCard = 0;
 
     /**
      * Constructs a deck with all the cards in order of rank.
@@ -44,7 +45,7 @@ public class Deck {
                 cardList.add(new Card(rank, suit));
             }
         }
-        IntStream.range(0, numberOfShuffles).forEach(i -> shuffle());
+        multiShuffle(numberOfShuffles);
         if (cut) {
             this.cut();
         }
@@ -53,7 +54,7 @@ public class Deck {
     /**
      * Returns a COPY of the card at the given index.
      */
-    public Card cardAt(int index) {
+    public Card copyCardAt(int index) {
         return new Card(cardList.get(index).getRank(), cardList.get(index).getSuit());
     }
 
@@ -79,6 +80,12 @@ public class Deck {
         }
         return success;
     }
+    
+    public void multiShuffle(int numberOfShuffles) {
+        if (numberOfShuffles > 0) {
+            IntStream.range(0, numberOfShuffles).forEach(i -> shuffle());
+        }
+    }
 
     /**
     * Rearranges the cards randomly.
@@ -88,10 +95,10 @@ public class Deck {
     * Also a random number of "riffle" shuffles works, too.
     */
     public void shuffle() {
-        IntStream.iterate(cardList.size() - 1, i -> i >= 0, i -> i - 1)
-                 .forEach(i -> swapCards(i, (int)(Math.random() * i)));
+        IntStream.iterate(cardList.size() - 1, i -> i >= topCard, i -> i - 1)
+                 .forEach(i -> swapCards(i, (int)(Math.random() * (i - topCard)) + topCard));
     }
-
+    
     /**
     * Takes the top half of the deck and puts it on the bottom.
     */
@@ -101,9 +108,53 @@ public class Deck {
         newList.addAll(cardList.subList(0, cardList.size() / 2));
         cardList = newList;
     }
-
+    
+    public int getTopCardIndex() {
+        return topCard;
+    }
+    
+    public Card dealCard() {
+        return topCard < cardList.size() ? cardList.get(topCard++) : null;
+    }
+    
+    public List<Card> dealCards(int numberOfCards) {
+        if (numberOfCards <= 0) {
+            return new ArrayList<>();
+        }
+        int oldTopCard = topCard;
+        topCard = Math.min(topCard + numberOfCards, cardList.size());
+        return cardList.subList(oldTopCard, topCard);
+    }
+    
+    public Card peekTopCard() {
+        return cardList.get(topCard);
+    }
+    
+    public void resetTopCard() {
+        topCard = 0;
+    }
+    
     @Override
     public String toString() {
         return cardList.toString();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Deck otherDeck = (Deck) obj;
+        return cardList.equals(otherDeck.cardList) && topCard == otherDeck.topCard;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = cardList.hashCode();
+        result = 31 * result + topCard;
+        return result;
     }
 }

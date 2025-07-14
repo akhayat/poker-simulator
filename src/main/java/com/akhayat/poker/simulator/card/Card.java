@@ -203,6 +203,7 @@ public class Card implements Comparable<Card> {
                 case "9": 
                 case "NINE": return NINE;
                 case "10": 
+                case "T":
                 case "TEN": return TEN;
                 case "J": 
                 case "JACK": return JACK;

@@ -78,7 +78,7 @@ public class FiveCardHandEvaluator {
     
     private List<Card> getKickers(Card.Rank strength, Card.Rank secondaryStrength) {
         return ordered.stream()
-                .filter(card -> card.getRank() != strength)
+                .filter(card -> card.getRank() != strength && card.getRank() != secondaryStrength)
                 .collect(Collectors.toList());
     }
 
@@ -103,7 +103,7 @@ public class FiveCardHandEvaluator {
         if (strength != null && secondaryStrength != null) {
             return Optional.of(new PokerHandEvaluation(
                     PokerHand.TWO_PAIR, strength, secondaryStrength,
-                    getKickers(strength)));
+                    getKickers(strength, secondaryStrength)));
         }
         return Optional.empty();
     }
@@ -196,6 +196,10 @@ public class FiveCardHandEvaluator {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst().get();
+    }
+    
+    public static PokerHandEvaluation evaluate(List<Card> hand) {
+        return new FiveCardHandEvaluator(hand).evaluate();
     }
 
     @Override
