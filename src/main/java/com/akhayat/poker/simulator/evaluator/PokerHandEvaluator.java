@@ -1,7 +1,6 @@
 package com.akhayat.poker.simulator.evaluator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,20 +9,14 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.akhayat.poker.simulator.card.Card;
-import com.akhayat.poker.simulator.evaluator.PokerHandEvaluation.PokerHand;
+import com.akhayat.poker.simulator.card.PokerHand;
+import com.akhayat.poker.simulator.evaluator.PokerHandEvaluation.PokerHandType;
 
-public class FiveCardHandEvaluator {
+public class PokerHandEvaluator {
     
     public static final byte HAND_SIZE = 5;
 
-    /**
-     * Represents the hand in whatever order it was created.
-     */
-    private List<Card> hand;
-    /**
-     * Represents the hand, but ordered from lowest to highest.
-     */
-    private List<Card> ordered;
+    PokerHand hand;
     
     private Map<Card.Rank, Integer> histogram;
 
@@ -31,28 +24,13 @@ public class FiveCardHandEvaluator {
      * Constructs a five card hand.
      * Surprise, suprise, it freaks out if hand isn't of length 5.
      */
-    public FiveCardHandEvaluator(List<Card> hand) {
-        if (hand.size() != HAND_SIZE) {
-            throw new IllegalArgumentException(
-                    "Card array must contain " + HAND_SIZE + " cards.");
-        }
+    public PokerHandEvaluator(PokerHand hand) {
         this.hand = hand;
-        setOrdered();
         setHistogram();
-    }
-
-    /**
-     * Creates a copy of hand, sorts it, and sticks it in ordered.
-     */
-    private void setOrdered() {
-        ordered = hand.stream()
-                .map(card -> new Card(card))
-                .collect(Collectors.toList());
-        ordered.sort(Collections.reverseOrder());
     }
     
     private void setHistogram() {
-        histogram = ordered.stream()
+        histogram = hand.getOrdered().stream()
                 .collect(Collectors.groupingBy(
                         Card::getRank, Collectors.counting()))
                 .entrySet().stream()
@@ -77,22 +55,22 @@ public class FiveCardHandEvaluator {
     }
     
     private List<Card> getKickers(Card.Rank strength, Card.Rank secondaryStrength) {
-        return ordered.stream()
+        return hand.getOrdered().stream()
                 .filter(card -> card.getRank() != strength && card.getRank() != secondaryStrength)
                 .collect(Collectors.toList());
     }
 
     private Optional<PokerHandEvaluation> highCardValue() {
         return Optional.of(new PokerHandEvaluation(
-                PokerHand.HIGH_CARD, ordered.get(0).getRank(),
-                getKickers(ordered.get(0).getRank())));
+                PokerHandType.HIGH_CARD, hand.getOrdered().get(0).getRank(),
+                getKickers(hand.getOrdered().get(0).getRank())));
     }
     
     private Optional<PokerHandEvaluation> pairValue() {
        Card.Rank strength = getStrength(2);
        if (strength != null) {
            return Optional.of(new PokerHandEvaluation(
-                   PokerHand.PAIR, strength, getKickers(strength)));
+                   PokerHandType.PAIR, strength, getKickers(strength)));
        }
        return Optional.empty();
     }
@@ -102,7 +80,7 @@ public class FiveCardHandEvaluator {
         Card.Rank secondaryStrength = getStrength(2, strength);
         if (strength != null && secondaryStrength != null) {
             return Optional.of(new PokerHandEvaluation(
-                    PokerHand.TWO_PAIR, strength, secondaryStrength,
+                    PokerHandType.TWO_PAIR, strength, secondaryStrength,
                     getKickers(strength, secondaryStrength)));
         }
         return Optional.empty();
@@ -112,44 +90,44 @@ public class FiveCardHandEvaluator {
         Card.Rank strength = getStrength(3);
         if (strength != null) {
             return Optional.of(new PokerHandEvaluation(
-                    PokerHand.THREE_OF_A_KIND, strength, getKickers(strength)));
+                    PokerHandType.THREE_OF_A_KIND, strength, getKickers(strength)));
         }
         return Optional.empty();
     }
 
     private Optional<PokerHandEvaluation> straightValue() {
         if (containsStraight()) {
-            Card.Rank strength = aceToFiveStraight() ? Card.Rank.FIVE : ordered.get(0).getRank();
-            return Optional.of(new PokerHandEvaluation(PokerHand.STRAIGHT, strength, new ArrayList<>(0)));
+            Card.Rank strength = aceToFiveStraight() ? Card.Rank.FIVE : hand.getOrdered().get(0).getRank();
+            return Optional.of(new PokerHandEvaluation(PokerHandType.STRAIGHT, strength, new ArrayList<>(0)));
         }
         return Optional.empty();
     }
     
     private boolean containsStraight() {
-        return IntStream.range(0, ordered.size() - 1)
-                .allMatch(i -> ordered.get(i).getRank().getValue() - 1
-                        == ordered.get(i + 1).getRank().getValue())
+        return IntStream.range(0, hand.getOrdered().size() - 1)
+                .allMatch(i -> hand.getOrdered().get(i).getRank().getValue() - 1
+                        == hand.getOrdered().get(i + 1).getRank().getValue())
                 || aceToFiveStraight();
     }
 
     private boolean aceToFiveStraight() {
-        return ordered.get(0).getRank() == Card.Rank.ACE
-                && ordered.get(1).getRank() == Card.Rank.FIVE
-                && ordered.get(2).getRank() == Card.Rank.FOUR
-                && ordered.get(3).getRank() == Card.Rank.THREE
-                && ordered.get(4).getRank() == Card.Rank.DEUCE;
+        return hand.getOrdered().get(0).getRank() == Card.Rank.ACE
+                && hand.getOrdered().get(1).getRank() == Card.Rank.FIVE
+                && hand.getOrdered().get(2).getRank() == Card.Rank.FOUR
+                && hand.getOrdered().get(3).getRank() == Card.Rank.THREE
+                && hand.getOrdered().get(4).getRank() == Card.Rank.DEUCE;
     }
 
     private Optional<PokerHandEvaluation> flushValue() {
         if (containsFlush()) {
-            return Optional.of(new PokerHandEvaluation(PokerHand.FLUSH,
-                    ordered.get(0).getRank(), getKickers(ordered.get(0).getRank())));
+            return Optional.of(new PokerHandEvaluation(PokerHandType.FLUSH,
+                    hand.getOrdered().get(0).getRank(), getKickers(hand.getOrdered().get(0).getRank())));
         }
         return Optional.empty();
     }
     
     private boolean containsFlush() {
-        return hand.stream().allMatch(card -> card.getSuit() == ordered.get(0).getSuit());
+        return hand.getHand().stream().allMatch(card -> card.getSuit() == hand.getOrdered().get(0).getSuit());
     }
 
     private Optional<PokerHandEvaluation> fullHouseValue() {
@@ -157,7 +135,7 @@ public class FiveCardHandEvaluator {
         Card.Rank secondaryStrength = getStrength(2, strength);
         if (strength != null && secondaryStrength != null) {
             return Optional.of(new PokerHandEvaluation(
-                    PokerHand.FULL_HOUSE, strength, secondaryStrength, null));
+                    PokerHandType.FULL_HOUSE, strength, secondaryStrength, null));
         }
         return Optional.empty();
     }
@@ -166,7 +144,7 @@ public class FiveCardHandEvaluator {
         Card.Rank strength = getStrength(4);
         if (strength != null) {
             return Optional.of(new PokerHandEvaluation(
-                    PokerHand.FOUR_OF_A_KIND, strength, getKickers(strength)));
+                    PokerHandType.FOUR_OF_A_KIND, strength, getKickers(strength)));
         }
         return Optional.empty();
     }
@@ -178,7 +156,7 @@ public class FiveCardHandEvaluator {
         PokerHandEvaluation straightValue = straightValue().orElse(null);
         if (straightValue != null && containsFlush()) {
             return Optional.of(new PokerHandEvaluation(
-                    PokerHand.STRAIGHT_FLUSH, straightValue.getStrength(), new ArrayList<>(0)));
+                    PokerHandType.STRAIGHT_FLUSH, straightValue.getStrength(), new ArrayList<>(0)));
         }
         return Optional.empty();
     }
@@ -198,8 +176,8 @@ public class FiveCardHandEvaluator {
             .findFirst().get();
     }
     
-    public static PokerHandEvaluation evaluate(List<Card> hand) {
-        return new FiveCardHandEvaluator(hand).evaluate();
+    public static PokerHandEvaluation evaluate(PokerHand hand) {
+        return new PokerHandEvaluator(hand).evaluate();
     }
 
     @Override
@@ -207,16 +185,5 @@ public class FiveCardHandEvaluator {
         return hand.toString() + " -> " + evaluate();
     }
     
-    public static void main(String[] args) {
-        List<Card> hand = List.of(
-                new Card("A", "s"),
-                new Card("A", "d"),
-                new Card("2", "c"),
-                new Card("2", "h"),
-                new Card("2", "d"));
-        
-        FiveCardHandEvaluator evaluator = new FiveCardHandEvaluator(hand);
-        System.out.println(evaluator);
-    }
 
 }

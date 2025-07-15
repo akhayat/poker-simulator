@@ -2,6 +2,7 @@ package com.akhayat.poker.simulator.evaluator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import com.akhayat.poker.simulator.card.Card;
 import com.akhayat.poker.simulator.card.Card.Rank;
@@ -11,21 +12,21 @@ public class PokerHandEvaluation {
     private Rank strength;
     private Rank secondaryStrength;
     private List<Card> kickers = new ArrayList<>(4);
-    private PokerHand handType;
+    private PokerHandType handType;
     
-    public PokerHandEvaluation(PokerHand handType, Rank strength) {
+    public PokerHandEvaluation(PokerHandType handType, Rank strength) {
         this(handType, strength, null, null);
     }
     
-    public PokerHandEvaluation(PokerHand handType, Rank strength, List<Card> kickers) {
+    public PokerHandEvaluation(PokerHandType handType, Rank strength, List<Card> kickers) {
         this(handType, strength, null, kickers);
     }
     
-    public PokerHandEvaluation(PokerHand handType, Rank strength, Rank secondaryStrength) {
+    public PokerHandEvaluation(PokerHandType handType, Rank strength, Rank secondaryStrength) {
         this(handType, strength, secondaryStrength, null);
     }
     
-    public PokerHandEvaluation(PokerHand handType, Rank strength, Rank secondaryStrength, List<Card> kickers) {
+    public PokerHandEvaluation(PokerHandType handType, Rank strength, Rank secondaryStrength, List<Card> kickers) {
         this.handType = handType;
         this.strength = strength;
         this.secondaryStrength = secondaryStrength;
@@ -40,7 +41,7 @@ public class PokerHandEvaluation {
         return kickers;
     }
 
-    public PokerHand getHandType() {
+    public PokerHandType getHandType() {
         return handType;
     }
 
@@ -52,8 +53,24 @@ public class PokerHandEvaluation {
     public String toString() {
         return handType + ": " + strength + " high";
     }
+    
+    public boolean beats(PokerHandEvaluation other) {
+        if (this.handType.getRanking() != other.handType.getRanking()) {
+            return this.handType.getRanking() > other.handType.getRanking();
+        } else if (this.getStrength().getValue() != other.getStrength().getValue()) {
+            return this.getStrength().getValue() > other.getStrength().getValue();
+        } else if (this.getSecondaryStrength() != other.getSecondaryStrength()) {
+            return this.getSecondaryStrength().getValue() > other.getSecondaryStrength().getValue();
+        } else {
+           return kickers.stream()
+                   .mapToInt(Card::getValue)
+                   .anyMatch(value -> IntStream.range(0, other.kickers.size())
+                                                .noneMatch(i -> value <= other.kickers.get(i).getValue()));
+        }
+        
+    }
 
-    public enum PokerHand {
+    public enum PokerHandType {
         HIGH_CARD(0),
         PAIR(1),
         TWO_PAIR(2),
@@ -66,7 +83,7 @@ public class PokerHandEvaluation {
         
         byte ranking;
         
-        PokerHand(int ranking) {
+        PokerHandType(int ranking) {
             this.ranking = (byte) ranking;
         }
         public byte getRanking() {
