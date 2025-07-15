@@ -52,25 +52,6 @@ public class PokerHandEvaluation {
     public String toString() {
         return handType + ": " + strength + " high";
     }
-    
-    public boolean beats(PokerHandEvaluation other) {
-        if (this.handType.getRanking() != other.handType.getRanking()) {
-            return this.handType.getRanking() > other.handType.getRanking();
-        } else if (this.getStrength().getValue() != other.getStrength().getValue()) {
-            return this.getStrength().getValue() > other.getStrength().getValue();
-        } else if (this.getSecondaryStrength() != other.getSecondaryStrength()) {
-            return this.getSecondaryStrength().getValue() > other.getSecondaryStrength().getValue();
-        } else {
-           for (int i = 0; i < kickers.size(); i++) {
-               int compare = kickers.get(i).compareTo(other.kickers.get(i));
-               if (compare != 0) {
-                   return compare > 0;
-               }
-           }
-           return false; 
-        }
-        
-    }
 
     public enum PokerHandType {
         HIGH_CARD(0),

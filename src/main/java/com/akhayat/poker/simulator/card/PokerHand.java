@@ -11,9 +11,9 @@ import com.akhayat.poker.simulator.evaluator.PokerHandEvaluator;
 
 public class PokerHand {
     
-    List<Card> hand;
-    List<Card> ordered;
-    PokerHandEvaluation evaluation = null;
+    private List<Card> hand;
+    private List<Card> ordered;
+    private PokerHandEvaluation evaluation = null;
     
     public static final byte HAND_SIZE = 5;
     
@@ -22,9 +22,9 @@ public class PokerHand {
     }
     
     public PokerHand(List<Card> hand) {
-       if (hand.size() != HAND_SIZE) {
+       if (hand == null || hand.size() != HAND_SIZE) {
            throw new IllegalArgumentException(
-                   "Card array must contain " + HAND_SIZE + " cards.");
+                   "Card list must contain " + HAND_SIZE + " cards.");
        }
        this.hand = hand;
        setOrdered();
@@ -50,18 +50,6 @@ public class PokerHand {
        return evaluation;
    }
    
-   public boolean beats(PokerHand other) {
-       return getEvaluation().beats(other.getEvaluation());
-   }
-   
-   public boolean ties(PokerHand other) {
-       return !this.beats(other) && !other.beats(this);
-   }
-   
-   public boolean losesTo(PokerHand other) {
-       return !this.beats(other) && other.beats(this);
-   }
-   
    @Override
    public String toString() {
        return hand + " -> " + evaluation;
@@ -85,16 +73,15 @@ public class PokerHand {
    }
    
    public static PokerHand fromStrings(String... cardStrings) {
+       if (cardStrings.length % 2 != 0) {
+           throw new IllegalArgumentException(
+                   "Card strings must be in pairs of rank and suit.");
+       }
        List<Card> cards = new ArrayList<>(cardStrings.length / 2);
        for (int i = 0; i < cardStrings.length; i += 2) {
            cards.add(new Card(cardStrings[i], cardStrings[i + 1]));
        }
        return new PokerHand(cards);
-   }
-   
-   public static void main(String[] args) {
-       PokerHand flush_3k49j_d = fromStrings("3", "d", "K", "d", "4", "d", "9", "d", "J", "d");
-       System.out.println(flush_3k49j_d);
    }
 
 }
