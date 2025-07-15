@@ -13,11 +13,7 @@ import com.akhayat.poker.simulator.card.PokerHand;
 public class PokerHandEvaluatorTest {
 
     private PokerHandEvaluation evaluateHand(String... cards) {
-        return new PokerHand(List.of(new Card(cards[0], cards[1]),
-                       new Card(cards[2], cards[3]),
-                       new Card(cards[4], cards[5]),
-                       new Card(cards[6], cards[7]),
-                       new Card(cards[8], cards[9]))).getEvaluation();
+        return PokerHand.fromStrings(cards).getEvaluation();
     }
     
     @Test

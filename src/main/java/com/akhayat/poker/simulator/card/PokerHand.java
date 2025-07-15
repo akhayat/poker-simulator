@@ -1,5 +1,6 @@
 package com.akhayat.poker.simulator.card;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,7 @@ public class PokerHand {
        }
        this.hand = hand;
        setOrdered();
+       evaluation = PokerHandEvaluator.evaluate(this);
    }
    
    private void setOrdered() {
@@ -45,14 +47,11 @@ public class PokerHand {
    }
    
    public PokerHandEvaluation getEvaluation() {
-       if (evaluation == null) {
-           evaluation = PokerHandEvaluator.evaluate(this);
-       }
        return evaluation;
    }
    
    public boolean beats(PokerHand other) {
-       return evaluation.beats(other.evaluation);
+       return getEvaluation().beats(other.getEvaluation());
    }
    
    public boolean ties(PokerHand other) {
@@ -83,6 +82,19 @@ public class PokerHand {
    @Override
    public int hashCode() {
        return hand.hashCode();
+   }
+   
+   public static PokerHand fromStrings(String... cardStrings) {
+       List<Card> cards = new ArrayList<>(cardStrings.length / 2);
+       for (int i = 0; i < cardStrings.length; i += 2) {
+           cards.add(new Card(cardStrings[i], cardStrings[i + 1]));
+       }
+       return new PokerHand(cards);
+   }
+   
+   public static void main(String[] args) {
+       PokerHand flush_3k49j_d = fromStrings("3", "d", "K", "d", "4", "d", "9", "d", "J", "d");
+       System.out.println(flush_3k49j_d);
    }
 
 }

@@ -2,7 +2,6 @@ package com.akhayat.poker.simulator.evaluator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import com.akhayat.poker.simulator.card.Card;
 import com.akhayat.poker.simulator.card.Card.Rank;
@@ -62,10 +61,13 @@ public class PokerHandEvaluation {
         } else if (this.getSecondaryStrength() != other.getSecondaryStrength()) {
             return this.getSecondaryStrength().getValue() > other.getSecondaryStrength().getValue();
         } else {
-           return kickers.stream()
-                   .mapToInt(Card::getValue)
-                   .anyMatch(value -> IntStream.range(0, other.kickers.size())
-                                                .noneMatch(i -> value <= other.kickers.get(i).getValue()));
+           for (int i = 0; i < kickers.size(); i++) {
+               int compare = kickers.get(i).compareTo(other.kickers.get(i));
+               if (compare != 0) {
+                   return compare > 0;
+               }
+           }
+           return false; 
         }
         
     }
