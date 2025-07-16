@@ -13,7 +13,7 @@ class SevenCardHandTest {
 
     @Test
     public void testSevenCardHandConstructor() {
-        PokerHand hand = new SevenCardHand(List.of(
+        SevenCardHand hand = new SevenCardHand(List.of(
                 new Card("a", "c"),
                 new Card("6", "h"),
                 new Card("7", "d"),
@@ -53,7 +53,7 @@ class SevenCardHandTest {
                 new Card("A", "d"),
                 new Card("A", "s"),
                 new Card("A", "c"),
-                new Card("2", "h"),
+                new Card("2", "d"),
                 new Card("5", "d")
         ));
         
@@ -62,9 +62,10 @@ class SevenCardHandTest {
                 new Card("A", "s"),
                 new Card("A", "c"),
                 new Card("k", "c"),
-                new Card("2", "d"),
+                new Card("5", "d"),
                 new Card("2", "h"),
-                new Card("5", "d")
+                new Card("2", "d")
+
         ));
         
         assertThat(hand.getEvaluation()).isNotNull();
@@ -117,49 +118,49 @@ class SevenCardHandTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
     
-    private PokerHand createHand(String... cards) {
+    private SevenCardHand createHand(String... cards) {
         return SevenCardHand.fromStrings(cards);
     }
     
     // straight fushes
-    PokerHand sfToQueenwS = createHand("7", "c", "t", "c", "6", "c", "9", "c", "j", "c", "q", "c", "8", "c");
-    PokerHand sfToQueenwH = createHand("A", "c", "t", "h", "2", "h", "9", "h", "j", "h", "q", "h", "8", "h");
-    PokerHand sfTo5wD = createHand("3", "d", "A", "d", "2", "d", "Q", "d", "j", "d", "4", "d", "5", "d");
+    SevenCardHand sfToQueenwS = createHand("7", "c", "t", "c", "6", "c", "9", "c", "j", "c", "q", "c", "8", "c");
+    SevenCardHand sfToQueenwH = createHand("A", "c", "t", "h", "2", "h", "9", "h", "j", "h", "q", "h", "8", "h");
+    SevenCardHand sfTo5wD = createHand("3", "d", "A", "d", "2", "d", "Q", "d", "j", "d", "4", "d", "5", "d");
     
     // quads
-    PokerHand quadAw8kicker = createHand("A", "c", "A", "h", "A", "d", "8", "s", "2", "c", "3", "d", "A", "s");
-    PokerHand quad8wAkicker = createHand("8", "c", "8", "h", "8", "d", "A", "s", "A", "c", "A", "d", "8", "s");
+    SevenCardHand quadAw8kicker = createHand("A", "c", "A", "h", "A", "d", "8", "s", "2", "c", "3", "d", "A", "s");
+    SevenCardHand quad8wAkicker = createHand("8", "c", "8", "h", "8", "d", "A", "s", "A", "c", "A", "d", "8", "s");
 
     // full houses
-    PokerHand fullHouseQueenOver5 = createHand("Q", "c", "Q", "h", "Q", "d", "5", "s", "5", "c", "2", "d", "j", "h");
-    PokerHand fullHouse9Over8 = createHand("9", "c", "9", "h", "9", "d", "8", "s", "8", "c", "A", "d", "8", "h");
+    SevenCardHand fullHouseQueenOver5 = createHand("Q", "c", "Q", "h", "Q", "d", "5", "s", "5", "c", "2", "d", "j", "h");
+    SevenCardHand fullHouse9Over8 = createHand("9", "c", "9", "h", "9", "d", "8", "s", "8", "c", "A", "d", "8", "h");
     
     // flushes
-    PokerHand flushToAce = createHand("2", "c", "A", "c", "Q", "c", "J", "c", "8", "c", "4", "c", "K", "h");
-    PokerHand flushToAceLower = createHand("2", "s", "A", "s", "Q", "c", "J", "s", "8", "s", "4", "s", "K", "d");
-    PokerHand flushToQueen = createHand("2", "d", "Q", "d", "J", "d", "8", "d", "4", "d", "K", "h", "A", "h");
+    SevenCardHand flushToAce = createHand("2", "c", "A", "c", "Q", "c", "J", "c", "8", "c", "4", "c", "K", "h");
+    SevenCardHand flushToAceLower = createHand("2", "s", "A", "s", "Q", "c", "J", "s", "8", "s", "4", "s", "K", "d");
+    SevenCardHand flushToQueen = createHand("2", "d", "Q", "d", "J", "d", "8", "d", "4", "d", "K", "h", "A", "h");
     
     // straights
-    PokerHand straightTo5 = createHand("3", "c", "4", "h", "5", "d", "A", "s", "7", "c", "8", "d", "2", "h");
-    PokerHand straightToJack = createHand("J", "c", "7", "h", "6", "d", "5", "s", "T", "c", "9", "d", "8", "h");
-    PokerHand straightToJack2 = createHand("J", "c", "7", "h", "J", "d", "J", "s", "T", "c", "9", "d", "8", "h");
+    SevenCardHand straightTo5 = createHand("3", "c", "4", "h", "5", "d", "A", "s", "7", "c", "8", "d", "2", "h");
+    SevenCardHand straightToJack = createHand("J", "c", "7", "h", "6", "d", "5", "s", "T", "c", "9", "d", "8", "h");
+    SevenCardHand straightToJack2 = createHand("J", "c", "7", "h", "J", "d", "J", "s", "T", "c", "9", "d", "8", "h");
     
     // three of a kind
-    PokerHand threeOfKing = createHand("K", "c", "K", "h", "K", "d", "2", "s", "5", "c", "3", "d", "A", "s");
-    PokerHand threeOfKingLower = createHand("5", "c", "K", "h", "K", "d", "2", "s", "K", "c", "3", "d", "Q", "s");
-    PokerHand threeOfSix = createHand("Q", "c", "A", "h", "6", "d", "2", "s", "6", "c", "6", "s", "K", "s");
+    SevenCardHand threeOfKing = createHand("K", "c", "K", "h", "K", "d", "2", "s", "5", "c", "3", "d", "A", "s");
+    SevenCardHand threeOfKingLower = createHand("5", "c", "K", "h", "K", "d", "2", "s", "K", "c", "3", "d", "Q", "s");
+    SevenCardHand threeOfSix = createHand("Q", "c", "A", "h", "6", "d", "2", "s", "6", "c", "6", "s", "K", "s");
     
     // two pairs
-    PokerHand twoPairAceOverQueen = createHand("A", "c", "A", "h", "Q", "d", "Q", "s", "J", "c", "3", "d", "3", "s");
-    PokerHand twoPairAceOverQueenLower = createHand("A", "c", "A", "h", "Q", "d", "Q", "s", "T", "c", "3", "d", "T", "s");
+    SevenCardHand twoPairAceOverQueen = createHand("A", "c", "A", "h", "Q", "d", "Q", "s", "J", "c", "3", "d", "3", "s");
+    SevenCardHand twoPairAceOverQueenLower = createHand("A", "c", "A", "h", "Q", "d", "Q", "s", "T", "c", "3", "d", "T", "s");
     
     // one pair
-    PokerHand pairOfKings = createHand("K", "c", "K", "h", "2", "d", "3", "s", "5", "c", "4", "d", "A", "s");
-    PokerHand pairOfKingsLower = createHand("K", "c", "K", "h", "2", "d", "3", "s", "5", "c", "4", "d", "Q", "s");
+    SevenCardHand pairOfKings = createHand("K", "c", "K", "h", "2", "d", "3", "s", "5", "c", "9", "d", "A", "s");
+    SevenCardHand pairOfKingsLower = createHand("K", "c", "K", "h", "2", "d", "3", "s", "5", "c", "4", "d", "Q", "s");
     
     // high card
-    PokerHand highCardAce = createHand("A", "c", "K", "h", "Q", "d", "J", "s", "T", "c", "9", "d", "8", "h");
-    PokerHand NineHighCard = createHand("9", "c", "7", "h", "8", "d", "5", "s", "4", "c", "3", "d", "2", "h");
+    SevenCardHand highCardAce = createHand("A", "c", "K", "h", "Q", "d", "J", "s", "4", "c", "9", "d", "8", "h");
+    SevenCardHand NineHighCard = createHand("9", "c", "7", "h", "8", "d", "5", "s", "4", "c", "3", "d", "2", "h");
 
     @Test
     public void testStraightFlush() {
@@ -329,8 +330,8 @@ class SevenCardHandTest {
         assertThat(evaluation.getSecondaryStrength()).isNull();
         assertThat(evaluation.getKickers()).isEqualTo(List.of(
                 new Card("A", "s"),
-                new Card("5", "c"),
-                new Card("3", "d")
+                new Card("9", "d"),
+                new Card("5", "c")
         ));
         
         evaluation = pairOfKingsLower.getEvaluation();
@@ -340,7 +341,7 @@ class SevenCardHandTest {
         assertThat(evaluation.getKickers()).isEqualTo(List.of(
                 new Card("Q", "s"),
                 new Card("5", "c"),
-                new Card("3", "d")
+                new Card("4", "d")
         ));
     }
     
@@ -354,9 +355,7 @@ class SevenCardHandTest {
                 new Card("K", "h"),
                 new Card("Q", "d"),
                 new Card("J", "s"),
-                new Card("T", "c"),
-                new Card("9", "d"),
-                new Card("8", "h")
+                new Card("9", "d")
         ));
         
         evaluation = NineHighCard.getEvaluation();
@@ -364,12 +363,11 @@ class SevenCardHandTest {
         assertThat(evaluation.getStrength()).isEqualTo(Card.Rank.NINE);
         assertThat(evaluation.getSecondaryStrength()).isNull();
         assertThat(evaluation.getKickers()).isEqualTo(List.of(
-                new Card("7", "h"),
                 new Card("8", "d"),
+                new Card("7", "h"),
                 new Card("5", "s"),
-                new Card("4", "c"),
-                new Card("3", "d"),
-                new Card("2", "h")
+                new Card("4", "c")
+
         ));
     }
 }

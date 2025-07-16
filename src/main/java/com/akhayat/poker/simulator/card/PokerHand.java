@@ -56,7 +56,7 @@ public class PokerHand {
    }
    
    public boolean beats(PokerHand other) {
-       return this.getEvaluation().beats(other.getEvaluation());
+       return this.evaluation.beats(other.evaluation);
    }
 
    public boolean tiesWith(PokerHand other) {
@@ -84,17 +84,18 @@ public class PokerHand {
        return hand.hashCode();
    }
    
-   protected static List<Card> cardListFromStrings(String...cardStrings) {
-       if (cardStrings.length % 2 != 0) {
-           throw new IllegalArgumentException(
-                   "Card strings must be in pairs of rank and suit.");
-       }
-       List<Card> cards = new ArrayList<>(cardStrings.length / 2);
-       for (int i = 0; i < cardStrings.length; i += 2) {
-           cards.add(new Card(cardStrings[i], cardStrings[i + 1]));
-       }
-       return cards;
-   }
+    // Add helper method for SevenCardHand
+    protected static List<Card> cardListFromStrings(String... cardStrings) {
+        if (cardStrings.length % 2 != 0) {
+            throw new IllegalArgumentException(
+                    "Card strings must be in pairs of rank and suit.");
+        }
+        List<Card> cards = new ArrayList<>(cardStrings.length / 2);
+        for (int i = 0; i < cardStrings.length; i += 2) {
+            cards.add(new Card(cardStrings[i], cardStrings[i + 1]));
+        }
+        return cards;
+    }
    
    public static PokerHand fromStrings(String... cardStrings) {
        return new PokerHand(cardListFromStrings(cardStrings));

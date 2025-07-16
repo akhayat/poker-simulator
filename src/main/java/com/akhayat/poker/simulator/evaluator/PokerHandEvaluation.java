@@ -49,7 +49,38 @@ public class PokerHandEvaluation {
     }
     
     public boolean beats(PokerHandEvaluation other) {
-        throw new UnsupportedOperationException();
+        // First compare hand type rankings
+        if (this.handType.getRanking() != other.handType.getRanking()) {
+            return this.handType.getRanking() > other.handType.getRanking();
+        }
+        
+        // Same hand type, compare primary strength
+        if (this.strength != other.strength) {
+            return this.strength.compareTo(other.strength) > 0;
+        }
+        
+        // Same primary strength, compare secondary strength if both exist
+        if (this.secondaryStrength != null && other.secondaryStrength != null) {
+            if (this.secondaryStrength != other.secondaryStrength) {
+                return this.secondaryStrength.compareTo(other.secondaryStrength) > 0;
+            }
+        } else if (this.secondaryStrength != null) {
+            return true; // This hand has secondary strength, other doesn't
+        } else if (other.secondaryStrength != null) {
+            return false; // Other hand has secondary strength, this doesn't
+        }
+        
+        // Compare kickers high to low
+        int minKickers = Math.min(this.kickers.size(), other.kickers.size());
+        for (int i = 0; i < minKickers; i++) {
+            int comparison = this.kickers.get(i).getRank().compareTo(other.kickers.get(i).getRank());
+            if (comparison != 0) {
+                return comparison > 0;
+            }
+        }
+        
+        // All comparisons are equal
+        return false;
     }
     
     @Override
