@@ -11,9 +11,9 @@ import com.akhayat.poker.simulator.evaluator.PokerHandEvaluator;
 
 public class PokerHand {
     
-    private List<Card> hand;
-    private List<Card> ordered;
-    private PokerHandEvaluation evaluation = null;
+    List<Card> hand;
+    List<Card> ordered;
+    PokerHandEvaluation evaluation = null;
     
     public static final byte HAND_SIZE = 5;
     
@@ -56,15 +56,15 @@ public class PokerHand {
    }
    
    public boolean beats(PokerHand other) {
-       throw new UnsupportedOperationException();
+       return this.getEvaluation().beats(other.getEvaluation());
    }
-   
+
    public boolean tiesWith(PokerHand other) {
-       throw new UnsupportedOperationException();
+       return !this.beats(other) && !other.beats(this);
    }
-   
+
    public boolean losesTo(PokerHand other) {
-       throw new UnsupportedOperationException();
+       return other.beats(this);
    }
    
    @Override
@@ -84,7 +84,7 @@ public class PokerHand {
        return hand.hashCode();
    }
    
-   public static PokerHand fromStrings(String... cardStrings) {
+   protected static List<Card> cardListFromStrings(String...cardStrings) {
        if (cardStrings.length % 2 != 0) {
            throw new IllegalArgumentException(
                    "Card strings must be in pairs of rank and suit.");
@@ -93,7 +93,11 @@ public class PokerHand {
        for (int i = 0; i < cardStrings.length; i += 2) {
            cards.add(new Card(cardStrings[i], cardStrings[i + 1]));
        }
-       return new PokerHand(cards);
+       return cards;
+   }
+   
+   public static PokerHand fromStrings(String... cardStrings) {
+       return new PokerHand(cardListFromStrings(cardStrings));
    }
 
 }
