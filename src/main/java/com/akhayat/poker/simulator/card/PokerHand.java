@@ -55,6 +55,18 @@ public class PokerHand {
        return hand + " -> " + evaluation;
    }
    
+   public boolean beats(PokerHand other) {
+       throw new UnsupportedOperationException();
+   }
+   
+   public boolean tiesWith(PokerHand other) {
+       throw new UnsupportedOperationException();
+   }
+   
+   public boolean losesTo(PokerHand other) {
+       throw new UnsupportedOperationException();
+   }
+   
    @Override
    public boolean equals(Object o) {
        if (this == o) {

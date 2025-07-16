@@ -48,6 +48,10 @@ public class PokerHandEvaluation {
         return secondaryStrength;
     }
     
+    public boolean beats(PokerHandEvaluation other) {
+        throw new UnsupportedOperationException();
+    }
+    
     @Override
     public String toString() {
         return handType + ": " + strength + " high";
