@@ -16,15 +16,30 @@ public class PokerHand {
     PokerHandEvaluation evaluation = null;
     
     public static final byte HAND_SIZE = 5;
+    int handSize = HAND_SIZE;
+
+    
+    protected PokerHand(int handSize, List<Card> hand) {
+        if (hand == null || hand.size() != handSize) {
+            throw new IllegalArgumentException(
+                    "Card list must contain " + handSize + " cards.");
+        }
+        this.hand = hand;
+        setOrdered();
+    }
     
     public PokerHand(Card... cards) {
         this(Arrays.asList(cards));
     }
     
     public PokerHand(List<Card> hand) {
-       if (hand == null || hand.size() != HAND_SIZE) {
+        this(hand, HAND_SIZE);
+    }
+    
+    public PokerHand(List<Card> hand, int handSize) {
+       if (hand == null || hand.size() != handSize) {
            throw new IllegalArgumentException(
-                   "Card list must contain " + HAND_SIZE + " cards.");
+                   "Card list must contain " + handSize + " cards.");
        }
        this.hand = hand;
        setOrdered();
@@ -96,6 +111,7 @@ public class PokerHand {
         }
         return cards;
     }
+    
    
    public static PokerHand fromStrings(String... cardStrings) {
        return new PokerHand(cardListFromStrings(cardStrings));
