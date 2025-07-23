@@ -15,9 +15,14 @@ public class SevenCardHand extends PokerHand {
     }
     
     public SevenCardHand(List<Card> cards) {
-        super(7, cards);
-        this.evaluation = evaluateSevenCards(cards);
+        super(cards, 7);
     }
+    
+    @Override
+    protected PokerHandEvaluation evaluate() {
+        return evaluateSevenCards(hand);
+    }
+    
     
    public static SevenCardHand fromStrings(String... cardStrings) {
        return new SevenCardHand(PokerHand.cardListFromStrings(cardStrings));
