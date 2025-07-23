@@ -7,7 +7,7 @@ import com.akhayat.poker.simulator.card.PokerHand;
  *
  */
 public class App {
-    public static void main( String[] args ) {
+    public static void main(String[] args ) {
         System.out.println(PokerHand.fromStrings(args));
     }
 }

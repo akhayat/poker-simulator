@@ -1,7 +1,6 @@
 package com.akhayat.poker.simulator.card;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,22 +8,13 @@ import java.util.stream.Collectors;
 import com.akhayat.poker.simulator.evaluator.PokerHandEvaluation;
 import com.akhayat.poker.simulator.evaluator.PokerHandEvaluator;
 
-public class PokerHand {
+public abstract class PokerHand {
     
     List<Card> hand;
     List<Card> ordered;
     PokerHandEvaluation evaluation = null;
     
-    public static final byte HAND_SIZE = 5;
-    int handSize = HAND_SIZE;
-    
-    public PokerHand(Card... cards) {
-        this(Arrays.asList(cards));
-    }
-    
-    public PokerHand(List<Card> hand) {
-        this(hand, HAND_SIZE);
-    }
+    private static final List<Integer> SUPPORTED_HAND_SIZES = List.of(5, 7);
     
     public PokerHand(List<Card> hand, int handSize) {
        if (hand == null || hand.size() != handSize) {
@@ -106,9 +96,16 @@ public class PokerHand {
         return cards;
     }
     
-   
-   public static PokerHand fromStrings(String... cardStrings) {
-       return new PokerHand(cardListFromStrings(cardStrings));
-   }
+    
+    public static PokerHand fromStrings(String... cardStrings) {
+        List<Card> cards = cardListFromStrings(cardStrings);
+        if (cards.size() == 5) {
+            return new FiveCardHand(cards);
+        } else if (cards.size() == 7) {
+            return new SevenCardHand(cards);
+        }
+        throw new IllegalArgumentException(
+               "Unsupported hand size: " + cards.size() + ". Supported sizes are: " + SUPPORTED_HAND_SIZES);
+    }
 
 }

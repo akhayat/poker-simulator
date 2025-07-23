@@ -13,7 +13,7 @@ class PokerHandTest {
     
     @Test
     public void testPokerHandConstructors() {
-        PokerHand hand = new PokerHand(List.of(
+        PokerHand hand = new FiveCardHand(List.of(
                 new Card("10", "h"),
                 new Card("k", "d"),
                 new Card("A", "s"),
@@ -51,7 +51,7 @@ class PokerHandTest {
     @Test
     public void testPokerHandConstructorErrors() {
         assertThatThrownBy(() -> {
-            new PokerHand(List.of(
+            new FiveCardHand(List.of(
                     new Card("10", "h"),
                     new Card("k", "d"),
                     new Card("A", "s"),
@@ -60,7 +60,7 @@ class PokerHandTest {
         }).isInstanceOf(IllegalArgumentException.class);
         
         assertThatThrownBy(() -> {
-            new PokerHand(List.of(
+            new FiveCardHand(List.of(
                     new Card("10", "h"),
                     new Card("k", "d"),
                     new Card("A", "s"),
@@ -71,16 +71,16 @@ class PokerHandTest {
         }).isInstanceOf(IllegalArgumentException.class);
         
         assertThatThrownBy(() -> {
-            new PokerHand(List.of());
+            new FiveCardHand(List.of());
         }).isInstanceOf(IllegalArgumentException.class);
         
         List<Card> cards = null;
         assertThatThrownBy(() -> {
-            new PokerHand(cards);
+            new FiveCardHand(cards);
         }).isInstanceOf(IllegalArgumentException.class);
         
         assertThatThrownBy(() -> {
-            new PokerHand();
+            new FiveCardHand();
         }).isInstanceOf(IllegalArgumentException.class);
         
         assertThatThrownBy(() -> {

@@ -11,7 +11,7 @@ import com.akhayat.poker.simulator.evaluator.PokerHandEvaluator;
 public class SevenCardHand extends PokerHand {
     
     public SevenCardHand(Card... cards) {
-        super(Arrays.asList(cards));
+        this(Arrays.asList(cards));
     }
     
     public SevenCardHand(List<Card> cards) {
@@ -36,7 +36,7 @@ public class SevenCardHand extends PokerHand {
                        .map(Card::new)
                        .collect(Collectors.toList());
                subHand.removeAll(List.of(cards.get(i), cards.get(j)));
-               PokerHandEvaluation subEval = PokerHandEvaluator.evaluate(new PokerHand(subHand));
+               PokerHandEvaluation subEval = PokerHandEvaluator.evaluate(new FiveCardHand(subHand));
                bestEvaluation = Optional.ofNullable(bestEvaluation).orElse(subEval);
                bestEvaluation = bestEvaluation.beats(subEval) ? bestEvaluation : subEval;
            }
