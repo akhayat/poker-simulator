@@ -57,6 +57,10 @@ public class Deck {
     public Card copyCardAt(int index) {
         return new Card(cardList.get(index).getRank(), cardList.get(index).getSuit());
     }
+    
+    public Card cardAt(int index) {
+        return index <= 0 ? cardList.get(0) : cardList.get(Math.min(index, cardList.size() - 1));
+    }
 
     /**
      * Returns the index of the given card or -1 if it doesn't exist.
@@ -132,6 +136,42 @@ public class Deck {
     
     public void resetTopCard() {
         topCard = 0;
+    }
+    
+    public void setTopCardIndex(int index) {
+        topCard = index < 0 ? 0 : Math.min(index, cardList.size() - 1);
+    }
+    
+    public void putCard(Card card, int index) {
+        if (card != null) {
+            putCards(List.of(card), index);
+        }
+    }
+    
+    public void putCards(List<Card> cards, int index) {
+        if (cards != null && !cards.isEmpty()) {
+            cards = cards.stream().distinct().toList();
+            List<Card> newCardList = new ArrayList<>(cardList.size());
+            index = index <= 0 ? 0 : Math.min(index, cardList.size() - 1);
+            cardList.removeAll(cards);
+            newCardList.addAll(cardList.subList(0,  index));
+            newCardList.addAll(cards);
+            newCardList.addAll(cardList.subList(index, cardList.size()));
+            cardList = newCardList;
+        }
+ 
+    }
+        
+    public void putCardOnTop(Card card) {
+        putCard(card, 0);
+    }
+    
+    public void putCardsOnTop(List<Card> cards) {
+        putCards(cards, 0);
+    }
+    
+    public int size() {
+        return cardList.size();
     }
     
     @Override
